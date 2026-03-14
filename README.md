@@ -36,9 +36,9 @@ Set values in `.env` (or copy from `.env.example`):
 - `OUTPUT_DIR` (default: `output`)
 - `MAX_LINKS_PER_PAGE` (default: `5`)
 - `MAX_CRAWL_PAGES` (default: `50`)
-- `START_PATH` (default: `/wiki/Barack_Obama`)
+- `START_PAGE` (default: `/wiki/Barack_Obama`)
 
-CLI start-link argument (`npm run crawl <path>`) overrides `START_PATH`.
+CLI start-link argument (`npm run crawl <path>`) overrides `START_PAGE`.
 
 ## Output
 
