@@ -9,17 +9,23 @@ Crawl Wikipedia with BFS graph traversal and visualize.
 
 ## Install
 
-`npm install`
+```bash
+npm install
+```
 
 ## Start Crawling
 
 Use the default start page from `.env`:
 
-`npm run crawl`
+```bash
+npm run crawl
+```
 
 Use a specific start page:
 
-`npm run crawl /wiki/Barack_Obama`
+```bash
+npm run crawl /wiki/Barack_Obama
+```
 
 Stop early anytime with `Ctrl+C`. A partial artifact is still written.
 
@@ -38,7 +44,9 @@ CLI start-link argument (`npm run crawl <path>`) overrides `INITIAL_LINK`.
 
 Each crawl creates a run folder:
 
-`output/run-<timestamp>__<start-page>/`
+```text
+output/run-<timestamp>__<start-page>/
+```
 
 Inside each run folder:
 
@@ -49,13 +57,17 @@ Inside each run folder:
 
 Serve a specific run folder:
 
-`npm run preview output/run-<timestamp>__<start-page>`
+```bash
+npm run preview output/run-<timestamp>__<start-page>
+```
 
 Then open the local URL printed by `serve` (typically `http://localhost:3000`).
 
 ## Test Crawl
 
-`npm test`
+```bash
+npm test
+```
 
 This starts a temporary local fixture server (`test/fixtures`), runs the crawler, and writes an
 artifact to `output/`.
