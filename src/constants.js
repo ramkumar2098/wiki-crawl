@@ -14,8 +14,8 @@ export const MAX_LINKS_PER_PAGE =
 export const MAX_CRAWL_PAGES =
   Number.isInteger(maxCrawlPages) && maxCrawlPages > 0 ? maxCrawlPages : 50
 
-export const INITIAL_LINK =
-  process.argv[2] ?? process.env.INITIAL_LINK ?? '/wiki/Barack_Obama'
+export const START_PATH =
+  process.argv[2] ?? process.env.START_PATH ?? '/wiki/Barack_Obama'
 
 const runId = new Date()
   .toISOString()
@@ -23,7 +23,7 @@ const runId = new Date()
   .replace(/[:.]/g, '-')
   .replace('T', '_')
 
-const runName = INITIAL_LINK.split('/').at(-1)
+const runName = START_PATH.split('/').at(-1)
 
 export const RUN_DIR = path.join(outputDir, `run-${runId}__${runName}`)
 
