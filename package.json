@@ -1,0 +1,22 @@
+{
+  "name": "wiki-crawl",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "crawl": "node src/main.js",
+    "test": "DOTENV_CONFIG_PATH=.env.test node -r dotenv/config test/test.js",
+    "preview": "serve"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cheerio": "^1.2.0",
+    "dotenv": "^17.3.1"
+  },
+  "devDependencies": {
+    "serve": "^14.2.6"
+  }
+}

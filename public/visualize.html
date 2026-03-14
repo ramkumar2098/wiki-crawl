@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #1e1e2e;
+        overflow: hidden;
+      }
+      svg {
+        width: 100vw;
+        height: 100vh;
+        display: block;
+      }
+      .link {
+        stroke: #555;
+        stroke-width: 1.5px;
+        marker-end: url(#arrow);
+      }
+      .node circle {
+        fill: #7c3aed;
+        stroke: #a78bfa;
+        stroke-width: 2px;
+        cursor: grab;
+      }
+      .node circle:active {
+        cursor: grabbing;
+      }
+      .node text {
+        fill: #e2e8f0;
+        font: 12px monospace;
+        pointer-events: none;
+      }
+      #hint {
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        color: #555;
+        font: 12px monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <svg>
+      <defs>
+        <marker
+          id="arrow"
+          markerWidth="8"
+          markerHeight="8"
+          refX="22"
+          refY="3"
+          orient="auto"
+        >
+          <path d="M0,0 L0,6 L8,3 z" fill="#555" />
+        </marker>
+      </defs>
+      <g class="zoom-layer"></g>
+    </svg>
+    <div id="hint">scroll to zoom · drag to pan · drag nodes to move</div>
+    <script type="module">
+      const res = await fetch('graph.json')
+
+      const graph = await res.json()
+
+      const nodes = [
+        ...new Set(Object.keys(graph).concat(Object.values(graph).flat())),
+      ].map(id => ({ id }))
+      const links = Object.entries(graph).flatMap(([src, dsts]) =>
+        dsts.map(dst => ({ source: src, target: dst })),
+      )
+
+      const svg = d3.select('svg')
+      const layer = svg.select('.zoom-layer')
+
+      // Zoom + Pan
+      const zoom = d3
+        .zoom()
+        .scaleExtent([0.05, 5])
+        .on('zoom', e => layer.attr('transform', e.transform))
+      svg.call(zoom)
+
+      const w = window.innerWidth
+      const h = window.innerHeight
+
+      const sim = d3
+        .forceSimulation(nodes)
+        .force(
+          'link',
+          d3
+            .forceLink(links)
+            .id(d => d.id)
+            .distance(130),
+        )
+        .force('charge', d3.forceManyBody().strength(-500))
+        .force('center', d3.forceCenter(w / 2, h / 2))
+
+      const link = layer
+        .selectAll('.link')
+        .data(links)
+        .enter()
+        .append('line')
+        .attr('class', 'link')
+
+      const node = layer
+        .selectAll('.node')
+        .data(nodes)
+        .enter()
+        .append('g')
+        .attr('class', 'node')
+        .call(
+          d3
+            .drag()
+            .on('start', (e, d) => {
+              if (!e.active) sim.alphaTarget(0.3).restart()
+              d.fx = d.x
+              d.fy = d.y
+            })
+            .on('drag', (e, d) => {
+              d.fx = e.x
+              d.fy = e.y
+            })
+            .on('end', (e, d) => {
+              if (!e.active) sim.alphaTarget(0)
+              d.fx = null
+              d.fy = null
+            }),
+        )
+
+      node.append('circle').attr('r', 22)
+      node
+        .append('text')
+        .attr('dy', 4)
+        .attr('text-anchor', 'middle')
+        .text(d => d.id.replace('.html', ''))
+
+      sim.on('tick', () => {
+        link
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y)
+        node.attr('transform', d => `translate(${d.x},${d.y})`)
+      })
+    </script>
+  </body>
+</html>
